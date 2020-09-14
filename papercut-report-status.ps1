@@ -51,6 +51,18 @@ $uri = [Uri]"http://localhost:9191/api/health"
 
   Write-Output "<p>Total Printers = $($rsp.printers.count)</p>"
   Write-Output "<p>Total Devices = $($rsp.devices.count)</p>"
+
+  if (Get-Service 'Epson Open Platform Solution for PaperCut' -ErrorAction SilentlyContinue) {
+
+    $epsonErrCount = (Select-String -Path c:\tmp\epsonOPS.log -Pattern error | Measure-Object).count
+
+    if ($epsonErrCount -gt 0) {
+        write-output "Epson plugin has reported $epsonErrCount errors"
+    } else {
+        write-output "Epson plugin reports no errors"
+    }
+}
+
  } | Out-File -FilePath .\report1.html
 
  Invoke-Expression .\report1.html
