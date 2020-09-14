@@ -19,10 +19,17 @@ Purpose/Change: Initial script development
 <Example goes here. Repeat this attribute for more than one example>:
 #>
 
+
 Get-Service -DisplayName *PaperCut* | Format-Table -Property  Name, Status, StartType
 
-$epsonErrCount = (Select-String -Path c:\tmp\epsonOPS.log -Pattern error | Measure-Object).count
 
-if ($epsonErrCount -gt 0) {
-    write-output "Epson plugin has reported $epsonErrCount errors"
+if (Get-Service 'Epson Open Platform Solution for PaperCut' -ErrorAction SilentlyContinue) {
+
+    $epsonErrCount = (Select-String -Path c:\tmp\epsonOPS.log -Pattern error | Measure-Object).count
+
+    if ($epsonErrCount -gt 0) {
+        write-output "Epson plugin has reported $epsonErrCount errors"
+    } else {
+        write-output "Epson plugin reports no errors"
+    }
 }
